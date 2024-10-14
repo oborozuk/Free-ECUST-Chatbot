@@ -12,7 +12,7 @@
 ## 安装
 1. 安装用户脚本管理器，例如 [Tampermonkey](https://www.tampermonkey.net/) 或 [ScriptCat ](https://docs.scriptcat.org/)。
 
-2. [点击这里](https://raw.githubusercontent.com/oborozuk/Free-ECUST-Chatbot/main/Free_ECUST_Chatbot.user.js)安装脚本；
+2. [点击这里](https://github.com/oborozuk/Free-ECUST-Chatbot/raw/main/Free%20ECUST%20Chatbot.user.js)安装脚本；
 
    或创建一个新的用户脚本，并粘贴 `Free ECUST Chatbot.user.js` 的内容并保存。
 
