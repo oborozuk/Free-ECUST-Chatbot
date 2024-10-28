@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Free ECUST Chatbot
 // @namespace    https://ecust.edu.cn/
-// @version      0.1.2
+// @version      0.1.3
 // @description  Free and unrestricted ECUST chatbot
 // @author       Oborozuki
 // @match        *://ai.s.ecust.edu.cn/chatbot/*
@@ -27,6 +27,14 @@ const deleteSystemPrompt = true;
                 }
                 body.chatSettings.temperature = modelTemperature;
             }
+            if (body.messages && body.messages.length) {
+                if (deleteSystemPrompt && body.messages[0].role === "system" && body.messages[0].content.startsWith("你是华东理工大学智能学术问答助手")) {
+                    body.messages = body.messages.slice(1);
+                }
+            }
+            options.body = JSON.stringify(body);
+        } else if ((url.includes("/chatbot/api/chat/erine") || url.includes("/chatbot/api/chat/ecust")) && options && options.body) {
+            const body = JSON.parse(options.body);
             if (body.messages && body.messages.length) {
                 if (deleteSystemPrompt && body.messages[0].role === "system" && body.messages[0].content.startsWith("你是华东理工大学智能学术问答助手")) {
                     body.messages = body.messages.slice(1);
