@@ -15,29 +15,24 @@ const deleteSystemPrompt = true;
 
 (function () {
     const originFetch = fetch;
-    window.unsafeWindow.fetch = (url, options) => {
+
+    window.unsafeWindow.fetch = async (url, options) => {
         if (url.includes("/chatbot/api/tokenizer") || url.includes("/chatbot/api/paycenter/token/consume")) {
             return null;
         }
-        if (url.includes("/chatbot/api/chat/azure") && options && options.body) {
+
+        if (url.includes("/chatbot/api/chat/") && options?.body) {
             const body = JSON.parse(options.body);
-            if (body.chatSettings) {
-                if (useGPT4oMini) {
-                    body.chatSettings.model = "gpt-4o-mini";
-                }
-                body.chatSettings.temperature = modelTemperature;
+            body.chatSettings.temperature = modelTemperature;
+
+            if (url.includes("/chatbot/api/chat/azure") && useGPT4oMini) {
+                body.chatSettings.model = "gpt-4o-mini";
             }
-            if (body.messages && body.messages.length) {
-                if (deleteSystemPrompt && body.messages[0].role === "system" && body.messages[0].content.startsWith("你是华东理工大学智能学术问答助手")) {
-                    body.messages = body.messages.slice(1);
-                }
-            }
-            options.body = JSON.stringify(body);
-        } else if ((url.includes("/chatbot/api/chat/erine") || url.includes("/chatbot/api/chat/ecust")) && options && options.body) {
-            const body = JSON.parse(options.body);
-            if (body.messages && body.messages.length) {
-                if (deleteSystemPrompt && body.messages[0].role === "system" && body.messages[0].content.startsWith("你是华东理工大学智能学术问答助手")) {
-                    body.messages = body.messages.slice(1);
+
+            if (body.messages?.length) {
+                const firstMessage = body.messages[0];
+                if (deleteSystemPrompt && firstMessage.role === "system" && firstMessage.content.startsWith("你是华东理工大学智能学术问答助手")) {
+                    body.messages.shift();
                 }
             }
             options.body = JSON.stringify(body);
@@ -52,9 +47,8 @@ const deleteSystemPrompt = true;
                 const res = await response.clone().json();
                 res.unUsedToken = 9999999999;
                 return new Response(JSON.stringify(res), response);
-            } else {
-                return response;
             }
+            return response;
         });
     };
 })();
